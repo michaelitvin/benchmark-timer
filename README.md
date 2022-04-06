@@ -41,7 +41,7 @@ Benchmarking MyTimedCode...
 [MyTimedCode] iter=2 took 0.100607s
 [MyTimedCode] iter=3 took 0.100326s
 [MyTimedCode] iter=4 took 0.100550s
-MyTimedCode benchmark: n_iters=5 avg=0.100390s std=0.000244s min=0.099941s max=0.100607s
+MyTimedCode benchmark: n_iters=5 avg=0.100390s std=0.000244s range=[0.099941s~0.100607s]
 
 ===================
 

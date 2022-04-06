@@ -17,7 +17,7 @@ class BenchmarkTimer:
                  print_summary: bool = True,
                  print_iters: bool = False,
                  summary_fmt: str = "{name} benchmark: n_iters={n} avg={avg:.6f}s std={std:.6f}s "
-                                    "min={p0:.6f}s max={p100:.6f}s",
+                                    "range=[{p0:.6f}s~{p100:.6f}s]",
                  iters_fmt: str = "[{name}] iter={i} took {total_seconds:.6f}s",
                  ):
         self.timings = defaultdict(float)
