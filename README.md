@@ -3,6 +3,13 @@
 Use the `BenchmarkTimer` class to measure the time it takes to execute some piece of code. \
 This gives more flexibility than the built-in timeit function, and runs in the same scope as the rest of your code.
 
+## Installation
+
+```
+pip install git+https://github.com/michaelitvin/benchmark-timer.git@main#egg=benchmark-timer
+```
+
+## Usage
 
 ```python
 from benchmark_timer import BenchmarkTimer
