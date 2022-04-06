@@ -15,23 +15,35 @@ pip install git+https://github.com/michaelitvin/benchmark-timer.git@main#egg=ben
 from benchmark_timer import BenchmarkTimer
 import time
 
+with BenchmarkTimer(name="MySimpleCode") as tm, tm.single_iteration():
+    time.sleep(.3)
+print("\n===================\n")
+
 with BenchmarkTimer(name="MyTimedCode", print_iters=True) as tm:
     for timing_iteration in tm.iterations(n=5):
         with timing_iteration:
             time.sleep(.1)
+print("\n===================\n")
 
-print("\nList of timings: ", list(tm.timings.values()))
+print("List of timings: ", list(tm.timings.values()))
 ```
 
 Output:
 ```text
-Benchmarking MyTimedCode...
-[MyTimedCode] iter=0 took 0.099844s
-[MyTimedCode] iter=1 took 0.100076s
-[MyTimedCode] iter=2 took 0.100837s
-[MyTimedCode] iter=3 took 0.100112s
-[MyTimedCode] iter=4 took 0.100256s
-MyTimedCode benchmark: n_iters=5 avg=0.100225s std=0.000333s min=0.099844s max=0.100837s
+Benchmarking MySimpleCode...
+MySimpleCode benchmark: n_iters=1 avg=0.300168s std=0.000000s min=0.300168s max=0.300168s
 
-List of timings:  [0.0998444, 0.1000763, 0.10083749999999997, 0.10011230000000004, 0.10025640000000002]
+===================
+
+Benchmarking MyTimedCode...
+[MyTimedCode] iter=0 took 0.099941s
+[MyTimedCode] iter=1 took 0.100527s
+[MyTimedCode] iter=2 took 0.100607s
+[MyTimedCode] iter=3 took 0.100326s
+[MyTimedCode] iter=4 took 0.100550s
+MyTimedCode benchmark: n_iters=5 avg=0.100390s std=0.000244s min=0.099941s max=0.100607s
+
+===================
+
+List of timings:  [0.09994119999999995, 0.10052709999999998, 0.100607, 0.10032560000000001, 0.10055029999999998]
 ```

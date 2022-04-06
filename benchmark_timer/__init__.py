@@ -52,6 +52,10 @@ class BenchmarkTimer:
             yield self._last_unprinted_tmi
             self._print_last_tmi_in_need_be()
 
+    def single_iteration(self):
+        self._last_unprinted_tmi = self.TimingIteration(self, 0)
+        return self._last_unprinted_tmi
+
     def _print_last_tmi_in_need_be(self):
         if self._print_iters and self._last_unprinted_tmi is not None:
             s = self._iters_fmt.format(name=self._name,
@@ -78,12 +82,17 @@ class BenchmarkTimer:
 
 
 def demo():
+    with BenchmarkTimer(name="MySimpleCode") as tm, tm.single_iteration():
+        time.sleep(.3)
+    print("\n===================\n")
+
     with BenchmarkTimer(name="MyTimedCode", print_iters=True) as tm:
         for timing_iteration in tm.iterations(n=5):
             with timing_iteration:
                 time.sleep(.1)
+    print("\n===================\n")
 
-    print("\nList of timings: ", list(tm.timings.values()))
+    print("List of timings: ", list(tm.timings.values()))
 
 
 if __name__ == '__main__':
