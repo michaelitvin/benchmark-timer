@@ -27,6 +27,7 @@ class BenchmarkTimer:
         self._print_iters = print_iters
         self._print_summary = print_summary
         self._last_unprinted_tmi = None
+        self._used = False
 
     class TimingIteration:
         def __init__(self, timer: "BenchmarkTimer", i: int):
@@ -46,6 +47,8 @@ class BenchmarkTimer:
             return self.end_time - self.start_time
 
     def iterations(self, n=None):
+        assert not self._used
+        self._used = True
         iter_counter = itertools.count() if n is None else range(n)
         for i in iter_counter:
             self._last_unprinted_tmi = self.TimingIteration(self, i)
@@ -53,6 +56,8 @@ class BenchmarkTimer:
             self._print_last_tmi_in_need_be()
 
     def single_iteration(self):
+        assert not self._used
+        self._used = True
         self._last_unprinted_tmi = self.TimingIteration(self, 0)
         return self._last_unprinted_tmi
 
