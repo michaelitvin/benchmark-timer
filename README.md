@@ -11,30 +11,37 @@ pip install git+https://github.com/michaelitvin/benchmark-timer.git@main#egg=ben
 
 ## Usage
 
+### Single iteration example
 ```python
 from benchmark_timer import BenchmarkTimer
 import time
 
 with BenchmarkTimer(name="MySimpleCode") as tm, tm.single_iteration():
     time.sleep(.3)
-print("\n===================\n")
-
-with BenchmarkTimer(name="MyTimedCode", print_iters=True) as tm:
-    for timing_iteration in tm.iterations(n=5, warmup=2):
-        with timing_iteration:
-            time.sleep(.1)
-print("\n===================\n")
-
-print("List of timings: ", list(tm.timings.values()))
 ```
 
 Output:
 ```text
 Benchmarking MySimpleCode...
 MySimpleCode benchmark: n_iters=1 avg=0.300881s std=0.000000s range=[0.300881s~0.300881s]
+```
 
-===================
+### Multiple iterations example
+```python
+from benchmark_timer import BenchmarkTimer
+import time
 
+with BenchmarkTimer(name="MyTimedCode", print_iters=True) as tm:
+    for timing_iteration in tm.iterations(n=5, warmup=2):
+        with timing_iteration:
+            time.sleep(.1)
+
+print("\n===================\n")
+print("List of timings: ", list(tm.timings.values()))
+```
+
+Output:
+```text
 Benchmarking MyTimedCode...
 [MyTimedCode] iter=0 took 0.099755s (warmup)
 [MyTimedCode] iter=1 took 0.100476s (warmup)
