@@ -20,7 +20,7 @@ with BenchmarkTimer(name="MySimpleCode") as tm, tm.single_iteration():
 print("\n===================\n")
 
 with BenchmarkTimer(name="MyTimedCode", print_iters=True) as tm:
-    for timing_iteration in tm.iterations(n=5):
+    for timing_iteration in tm.iterations(n=5, warmup=2):
         with timing_iteration:
             time.sleep(.1)
 print("\n===================\n")
@@ -31,19 +31,19 @@ print("List of timings: ", list(tm.timings.values()))
 Output:
 ```text
 Benchmarking MySimpleCode...
-MySimpleCode benchmark: n_iters=1 avg=0.300168s std=0.000000s min=0.300168s max=0.300168s
+MySimpleCode benchmark: n_iters=1 avg=0.300881s std=0.000000s range=[0.300881s~0.300881s]
 
 ===================
 
 Benchmarking MyTimedCode...
-[MyTimedCode] iter=0 took 0.099941s
-[MyTimedCode] iter=1 took 0.100527s
-[MyTimedCode] iter=2 took 0.100607s
-[MyTimedCode] iter=3 took 0.100326s
-[MyTimedCode] iter=4 took 0.100550s
-MyTimedCode benchmark: n_iters=5 avg=0.100390s std=0.000244s range=[0.099941s~0.100607s]
+[MyTimedCode] iter=0 took 0.099755s (warmup)
+[MyTimedCode] iter=1 took 0.100476s (warmup)
+[MyTimedCode] iter=2 took 0.100189s 
+[MyTimedCode] iter=3 took 0.099900s 
+[MyTimedCode] iter=4 took 0.100888s 
+MyTimedCode benchmark: n_iters=3 avg=0.100326s std=0.000414s range=[0.099900s~0.100888s]
 
 ===================
 
-List of timings:  [0.09994119999999995, 0.10052709999999998, 0.100607, 0.10032560000000001, 0.10055029999999998]
+List of timings:  [0.10018850000000001, 0.09990049999999995, 0.10088760000000008]
 ```

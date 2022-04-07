@@ -18,7 +18,7 @@ class BenchmarkTimer:
                  print_iters: bool = False,
                  summary_fmt: str = "{name} benchmark: n_iters={n} avg={avg:.6f}s std={std:.6f}s "
                                     "range=[{p0:.6f}s~{p100:.6f}s]",
-                 iters_fmt: str = "[{name}] iter={i} took {total_seconds:.6f}s",
+                 iters_fmt: str = "[{name}] iter={i} took {total_seconds:.6f}s {warmup_str}",
                  ):
         self.timings = defaultdict(float)
         self._summary_fmt = summary_fmt
@@ -30,28 +30,30 @@ class BenchmarkTimer:
         self._used = False
 
     class TimingIteration:
-        def __init__(self, timer: "BenchmarkTimer", i: int):
+        def __init__(self, timer: "BenchmarkTimer", i: int, is_warmup: bool = False):
             self._timer = timer
             self.i = i
             self.start_time = None
             self.end_time = None
+            self.is_warmup = is_warmup
 
         def __enter__(self):
             self.start_time = time.perf_counter()
 
         def __exit__(self, exc_type, exc_val, exc_tb):
             self.end_time = time.perf_counter()
-            self._timer.timings[self.i] += self.total_seconds()
+            if not self.is_warmup:
+                self._timer.timings[self.i] += self.total_seconds()
 
         def total_seconds(self):
             return self.end_time - self.start_time
 
-    def iterations(self, n=None):
+    def iterations(self, n=None, warmup=0):
         assert not self._used
         self._used = True
         iter_counter = itertools.count() if n is None else range(n)
         for i in iter_counter:
-            self._last_unprinted_tmi = self.TimingIteration(self, i)
+            self._last_unprinted_tmi = self.TimingIteration(self, i, i < warmup)
             yield self._last_unprinted_tmi
             self._print_last_tmi_in_need_be()
 
@@ -65,7 +67,8 @@ class BenchmarkTimer:
         if self._print_iters and self._last_unprinted_tmi is not None:
             s = self._iters_fmt.format(name=self._name,
                                        i=self._last_unprinted_tmi.i,
-                                       total_seconds=self._last_unprinted_tmi.total_seconds())
+                                       total_seconds=self._last_unprinted_tmi.total_seconds(),
+                                       warmup_str='(warmup)' if self._last_unprinted_tmi.is_warmup else '')
             print(s)
             self._last_unprinted_tmi = None
 
@@ -92,7 +95,7 @@ def demo():
     print("\n===================\n")
 
     with BenchmarkTimer(name="MyTimedCode", print_iters=True) as tm:
-        for timing_iteration in tm.iterations(n=5):
+        for timing_iteration in tm.iterations(n=5, warmup=2):
             with timing_iteration:
                 time.sleep(.1)
     print("\n===================\n")
